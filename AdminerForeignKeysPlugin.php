@@ -4,7 +4,8 @@ class AdminerForeignKeys {
 	function backwardKeys($table, $tableName) {
 		$connection = connection();
 
-		$result = $connection->query(sprintf('SELECT TABLE_NAME,COLUMN_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_NAME = \'%s\'', $tableName));
+		$database = $connection->query('SELECT DATABASE() AS db;')->fetch_assoc();
+		$result = $connection->query(sprintf('SELECT TABLE_NAME,COLUMN_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_NAME = \'%s\' AND CONSTRAINT_SCHEMA = \'%s\';', $tableName, $database['db']));
 
 		$backwardKeys = [];
 		$i = 0;
