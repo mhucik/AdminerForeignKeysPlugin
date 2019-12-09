@@ -1,6 +1,40 @@
 <?php
 
 class AdminerForeignKeys {
+	function head() {
+		?>
+		<script<?php echo nonce(); ?>>
+			document.addEventListener("DOMContentLoaded", function()
+			{
+				collapsable = document.getElementsByClassName('collapsable')
+
+				for (item of collapsable) {
+					item.addEventListener('click', function () {
+						moreDiv = this.parentElement.getElementsByClassName('fk-more')[0]
+
+						if (moreDiv.classList.contains('hidden')) {
+							moreDiv.classList.remove('hidden')
+							this.innerHTML = " ⇡⇡ "
+						} else {
+							moreDiv.classList.add('hidden')
+							this.innerHTML = " ⇣⇣ "
+						}
+
+					})
+				}
+			})
+		</script>
+		<style>
+			.collapsable {
+				cursor: pointer;
+			}
+		</style>
+		<?php
+
+		return true;
+	}
+
+
 	function backwardKeys($table, $tableName) {
 		$connection = connection();
 
@@ -27,12 +61,26 @@ class AdminerForeignKeys {
 	}
 
 	function backwardKeysPrint($backwardKeys, $row) {
+		$iterator = 0;
+
 		foreach ($backwardKeys as $backwardKey) {
+			$iterator++;
 			$whereLink = where_link(1, $backwardKey['columnName'], $row[$backwardKey['referencedColumnName']]);
 			$link = sprintf('select=%s%s', $backwardKey['tableName'], $whereLink);
-			echo sprintf("<a href='%s'>%s</a>\n", h(ME . $link), $backwardKey['tableName']);
+
+			if ($iterator === 2) {
+				echo '<div class="fk-more hidden">';
+			}
+
+			echo sprintf("<a href='%s'>%s</a>%s\n", h(ME . $link), $backwardKey['tableName'], $iterator === 1 ? '<span class="collapsable"> ⇣⇣ </span>' : '');
+
+			if ($iterator === count($backwardKeys)) {
+				echo '</div>';
+			}
 		}
+
+		echo '</div>';
 	}
 }
 
-return new AdminerForeignKeys;
+return new AdminerForeignKeys();
