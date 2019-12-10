@@ -14,10 +14,10 @@ class AdminerForeignKeys {
 
 						if (moreDiv.classList.contains('hidden')) {
 							moreDiv.classList.remove('hidden')
-							this.innerHTML = " ⇡⇡ "
+							this.innerHTML = " [<a>less</a>]"
 						} else {
 							moreDiv.classList.add('hidden')
-							this.innerHTML = " ⇣⇣ "
+							this.innerHTML = " [<a>more</a>]"
 						}
 
 					})
@@ -72,7 +72,7 @@ class AdminerForeignKeys {
 				echo '<div class="fk-more hidden">';
 			}
 
-			echo sprintf("<a href='%s'>%s</a>%s\n", h(ME . $link), $backwardKey['tableName'], ($iterator === 1 && count($backwardKeys) > 1) ? '<span class="collapsable"> ⇣⇣ </span>' : '');
+			echo sprintf("<a href='%s'>%s</a>%s\n", h(ME . $link), $backwardKey['tableName'], ($iterator === 1 && count($backwardKeys) > 1) ? '<span class="collapsable"> [<a>more</a>]</span>' : '');
 
 			if ($iterator === count($backwardKeys)) {
 				echo '</div>';
