@@ -3,7 +3,7 @@
 class AdminerForeignKeys {
 	function head() {
 		?>
-		<script<?php echo nonce(); ?>>
+		<script<?php echo Adminer\nonce(); ?>>
 			document.addEventListener("DOMContentLoaded", function()
 			{
 				collapsable = document.getElementsByClassName('collapsable')
@@ -36,7 +36,7 @@ class AdminerForeignKeys {
 
 
 	function backwardKeys($table, $tableName) {
-		$connection = connection();
+		$connection = Adminer\connection();
 
 		$database = $connection->query('SELECT DATABASE() AS db;')->fetch_assoc();
 		$result = $connection->query(sprintf('SELECT TABLE_NAME,COLUMN_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_NAME = \'%s\' AND CONSTRAINT_SCHEMA = \'%s\';', $tableName, $database['db']));
@@ -65,14 +65,14 @@ class AdminerForeignKeys {
 
 		foreach ($backwardKeys as $backwardKey) {
 			$iterator++;
-			$whereLink = where_link(1, $backwardKey['columnName'], $row[$backwardKey['referencedColumnName']]);
+			$whereLink = Adminer\where_link(1, $backwardKey['columnName'], $row[$backwardKey['referencedColumnName']]);
 			$link = sprintf('select=%s%s', $backwardKey['tableName'], $whereLink);
 
 			if ($iterator === 2) {
 				echo '<div class="fk-more hidden">';
 			}
 
-			echo sprintf("<a href='%s'>%s</a>%s\n", h(ME . $link), $backwardKey['tableName'], ($iterator === 1 && count($backwardKeys) > 1) ? '<span class="collapsable"> [<a>more</a>]</span>' : '');
+			echo sprintf("<a href='%s'>%s</a>%s\n", Adminer\h(Adminer\ME . $link), $backwardKey['tableName'], ($iterator === 1 && count($backwardKeys) > 1) ? '<span class="collapsable"> [<a>more</a>]</span>' : '');
 
 			if ($iterator === count($backwardKeys)) {
 				echo '</div>';
